@@ -1,0 +1,47 @@
+
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro # mount nginx configuration to nginx container
+      - ./conf.d:/etc/nginx/conf.d:ro # mount all server block configurations to nginx container
+      - ./ssl:/etc/nginx/ssl:ro # mount ssl file to nginx container  ssl folder
+      - ./logs:/var/log/nginx # store logs in host folder
+      - ./cache:/var/cache/nginx # store the cache in host folder
+      - ../stephenc_wp/src:/var/www/stephenc:ro # mount stephenc_wp wordpress-core file to nginx
+      - ../app/src:/var/www/app:ro # mount app src fodler to nginx
+      - ../rminfo/src:/var/www/rminfo:ro #mount rminfo wp-core files
+      - ../drive/laravel-file-manager:/var/www/laravel-file-manager:ro #mount drive
+      - ../store/laravel-ecommerce-inertia:/var/www/laravel-ecommerce-inertia:ro #mount store
+      - ../joblisting/laravel-nuxt-joblisting:/var/www/laravel-nuxt-joblisting:ro #mount joblisting
+      - phpmyadmin_data:/var/www/html:ro # mount phpmyadmin volume to nginx
+    environment:
+      - LC_TIME=en_US.UTF-8
+      - LANG=en_US.UTF-8
+      - TZ=Asia/Manila
+    networks:
+      - web-network
+    deploy:
+      resources:
+        limits:
+          memory: '256m'
+          cpus: '0.25'
+        reservations:
+          cpus: '0.1'     # Reserve minimum CPU
+          memory: '128m'  # Reserve minimum memory
+
+
+networks:
+  web-network:
+    external: true
+
+volumes:
+  phpmyadmin_data:
+    external: true

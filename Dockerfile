@@ -2,7 +2,7 @@
 FROM nginx:alpine AS builder
 
 # Add non-root user
-RUN addgroup -S -g 2024 appgroup && adduser -S -u 2024 appuser -G appgroup
+RUN addgroup -S -g 1000 appgroup && adduser -S -u 1000 appuser -G appgroup
 
 # Copy NGINX configuration file
 COPY nginx.conf /etc/nginx/nginx.conf
